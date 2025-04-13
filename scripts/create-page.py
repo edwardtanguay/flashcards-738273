@@ -1,1 +1,3 @@
-print("this will create a new page in the app")
+import utils.debug as debug
+
+debug.devlog("this will create a page")
