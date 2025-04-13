@@ -1,9 +1,44 @@
 import utils.debug as debug
 import utils.files as files
 import utils.general as general
- 
-debug.devlog("get lines from file")
+import json
+	
+class Flashcard:
+	def __init__(self, suuid, category, front, back):
+		self.suuid = suuid
+		self.category = category
+		self.front = front
+		self.back = back
+	
 lines = files.get_lines_from_file("../data/flashcards.txt")
-
-for i, line in enumerate(lines, 1):
-    print(f"{i:03d}: {line}")
+	
+flashcards = []
+for i in range(0, len(lines), 4):
+	if i + 3 > len(lines):
+		break
+	
+	category = lines[i].strip()
+	front = lines[i+1].strip()
+	back = lines[i+2].strip()
+	
+	flashcard = Flashcard(
+		suuid=general.generate_short_uuid(),
+		category=category,
+		front=front,
+		back=back
+	)
+	
+	flashcards.append(flashcard.__dict__)
+	
+try:
+	# Convert flashcards to JSON
+	json_data = json.dumps(flashcards, indent=4)
+	
+	# Write JSON data to file
+	with open("../parseddata/flashcards.json", 'w') as json_file:
+		json_file.write(json_data)
+	
+	print("Successfully updated flashcards.json")
+	
+except Exception as err:
+	print(f"Error: {err}")
